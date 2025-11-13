@@ -62,15 +62,13 @@ pipeline {
   post {
     always {
         script {
-            sh '''
+          def message = "Build ${JOB_NAME} #${BUILD_NUMBER} finished. Status: ${currentBuild.currentResult}"
+          sh """
             curl -X POST https://webexapis.com/v1/messages \
                 -H "Authorization: Bearer ${WEBEX_TOKEN}" \
                 -H "Content-Type: application/json" \
-                -d '{
-                    "roomId": "'${WEBEX_ROOM}'",
-                    "text": "Build ${JOB_NAME} #${BUILD_NUMBER} finished. Status: ${currentBuild.currentResult}"
-                }'
-            '''
+                -d '{"roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00v...", "text": "${message}"}'
+            """
         }
     }
 }
