@@ -3,7 +3,7 @@ pipeline {
   environment {
     // these credential IDs must exist in Jenkins Credentials
     WEBEX_TOKEN = credentials('WEBEX_TOKEN')  // secret text
-    WEBEX_ROOM  = credentials('WEBEX_ROOM')   // secret text (roomId)
+    WEBEX_ROOM  = 'Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMmYzOGZhOTAtYTdjMy0xMWYwLTg0MGQtOWZlZmM4MmJmYWE4'
   }
   stages {
     stage('Checkout') {
