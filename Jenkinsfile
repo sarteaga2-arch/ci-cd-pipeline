@@ -27,11 +27,12 @@ pipeline {
     stage('Install deps') {
 
       steps {
-
-        sh 'python -m pip install --upgrade pip || true'
-
-        sh 'pip install -r requirements.txt'
-
+        sh '''
+            python3 -m venv venv
+            . venv/bin/activate
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+        '''
       }
 
     }
