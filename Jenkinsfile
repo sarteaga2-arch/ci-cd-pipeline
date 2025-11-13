@@ -1,66 +1,131 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.10-slim'
-            args '-u root'
-        }
+
+  agent any
+
+  environment {
+
+    // these credential IDs must exist in Jenkins Credentials
+
+    WEBEX_TOKEN = credentials('WEBEX_TOKEN')  // secret text
+
+    WEBEX_ROOM  = 'Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMmYzOGZhOTAtYTdjMy0xMWYwLTg0MGQtOWZlZmM4MmJmYWE4'
+
+  }
+
+  stages {
+
+    stage('Setup Python'){
+
+      steps {
+
+        sh '''
+
+        apt-get update
+
+        apt-get install -y python3 python3-pip python3-venv
+
+        ln -s /usr/bin/python3 /usr/bin/python || true
+
+        '''
+
+      }
+
     }
 
-    environment {
-        WEBEX_TOKEN = credentials('webex_token')
-        WEBEX_ROOM  = 'Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMmYzOGZhOTAtYTdjMy0xMWYwLTg0MGQtOWZlZmM4MmJmYWE4'
+
+
+    stage('Checkout') {
+
+      steps {
+
+        checkout scm
+
+      }
+
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+    stage('Install deps') {
 
-        stage('Install deps') {
-            steps {
-                sh 'python -m pip install --upgrade pip'
-                sh 'pip install -r requirements.txt || true'
-            }
-        }
+      steps {
 
-        stage('Run tests') {
-            steps {
-                sh 'pytest || true'
-            }
-        }
+        sh 'python -m pip install --upgrade pip || true'
+
+        sh 'pip install -r requirements.txt'
+
+      }
+
     }
 
-    post {
-        success {
-            script {
-                sh '''
-                curl -X POST https://webexapis.com/v1/messages \
-                    -H "Authorization: Bearer ${WEBEX_TOKEN}" \
-                    -H "Content-Type: application/json" \
-                    -d '{
-                        "roomId": "'${WEBEX_ROOM}'",
-                        "text": "✅ Build SUCCESS: ${JOB_NAME}/${BRANCH_NAME} #${BUILD_NUMBER} - ${BUILD_URL}"
-                    }'
-                '''
-            }
+    stage('Run tests') {
+
+      steps {
+
+        sh 'pytest -q --junitxml=results.xml'
+
+      }
+
+      post {
+
+        always {
+
+          junit 'results.xml'
+
         }
 
-        failure {
-            script {
-                sh '''
-                curl -X POST https://webexapis.com/v1/messages \
-                    -H "Authorization: Bearer ${WEBEX_TOKEN}" \
-                    -H "Content-Type: application/json" \
-                    -d '{
-                        "roomId": "'${WEBEX_ROOM}'",
-                        "text": "❌ Build FAILURE: ${JOB_NAME}/${BRANCH_NAME} #${BUILD_NUMBER} - ${BUILD_URL}"
-                    }'
-                '''
-            }
-        }
+      }
+
     }
+
+  }
+
+  post {
+
+    success {
+
+      script {
+
+        def msg = "✅ Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${env.BUILD_URL}"
+
+        sh """
+
+          curl -X POST https://webexapis.com/v1/messages \
+
+            -H "Authorization: Bearer ${WEBEX_TOKEN}" \
+
+            -H "Content-Type: application/json" \
+
+            -d '{ "roomId": "${WEBEX_ROOM}", "text": "${msg}" }'
+
+        """
+
+      }
+
+    }
+
+    failure {
+
+      script {
+
+        def msg = "❌ Build FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${env.BUILD_URL}"
+
+        sh """
+
+          curl -X POST https://webexapis.com/v1/messages \
+
+            -H "Authorization: Bearer ${WEBEX_TOKEN}" \
+
+            -H "Content-Type: application/json" \
+
+            -d '{ "roomId": "${WEBEX_ROOM}", "text": "${msg}" }'
+
+        """
+
+      }
+
+    }
+
+  }
+
 }
 
 
