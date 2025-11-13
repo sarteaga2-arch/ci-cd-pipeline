@@ -41,7 +41,7 @@ pipeline {
 
       steps {
 
-        sh 'pytest -q --junitxml=results.xml'
+        sh './venv/bin/pytest -q --junitxml=results.xml'
 
       }
 
