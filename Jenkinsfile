@@ -67,7 +67,7 @@ pipeline {
             curl -X POST https://webexapis.com/v1/messages \
                 -H "Authorization: Bearer ${WEBEX_TOKEN}" \
                 -H "Content-Type: application/json" \
-                -d '{"roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00v...", "text": "${message}"}'
+                -d '{"roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMmYzOGZhOTAtYTdjMy0xMWYwLTg0MGQtOWZlZmM4MmJmYWE4", "text": "${message}"}'
             """
         }
     }
