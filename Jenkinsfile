@@ -6,6 +6,16 @@ pipeline {
     WEBEX_ROOM  = 'Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMmYzOGZhOTAtYTdjMy0xMWYwLTg0MGQtOWZlZmM4MmJmYWE4'
   }
   stages {
+    stage('Setup Python'){
+      steps {
+        sh '''
+        apt-get update
+        apt-get install -y python3 python3-pip python3-venv
+        ln -s /usr/bin/python3 /usr/bin/python || true
+        '''
+      }
+    }
+
     stage('Checkout') {
       steps {
         checkout scm
