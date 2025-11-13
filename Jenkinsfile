@@ -6,7 +6,7 @@ pipeline {
 
     // these credential IDs must exist in Jenkins Credentials
 
-    WEBEX_TOKEN =  NTc2ZDA0YzgtMzJlMS00OGZjLTgzZDctYzk2YWUyNjMyOGY0YTU5MTc3NWItODNj_P0A1_bac71010-7484-48b3-b7ce-a267353178c5 // secret text
+    WEBEX_TOKEN =  'NTc2ZDA0YzgtMzJlMS00OGZjLTgzZDctYzk2YWUyNjMyOGY0YTU5MTc3NWItODNj_P0A1_bac71010-7484-48b3-b7ce-a267353178c5' // secret text
 
     WEBEX_ROOM  = 'Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vMmYzOGZhOTAtYTdjMy0xMWYwLTg0MGQtOWZlZmM4MmJmYWE4'
 
